@@ -210,7 +210,7 @@ function ChatWindow({
       </div>
 
       {/* Message input */}
-      <div className="border-t bg-white">
+      <div className="border-t bg-white fixed bottom-0 left-0 z-[50] w-full">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <form onSubmit={handleSubmit}>
             <div className="relative flex w-full">
