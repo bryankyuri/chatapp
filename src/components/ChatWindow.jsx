@@ -162,9 +162,9 @@ function ChatWindow({
       {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto  rounded-t-[28px] relative z-[4] mt-[80px] pb-[80px]"
+        className="flex-1 overflow-y-auto  rounded-t-[28px] relative z-[2] mt-[80px] pb-[80px]"
       >
-        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 relative z-[3]">
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 relative z-[2]">
           {messages.map((msg, idx) => (
             <div
               key={idx}
