@@ -27,6 +27,7 @@ function ChatWindow({
   onSendMessage,
   onNewTopic,
   setSelectedTopic,
+  fs,
 }) {
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
@@ -222,7 +223,9 @@ function ChatWindow({
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Tanya Informasi"
-                className="w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] outline-none mr-2"
+                className={`w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] outline-none mr-2 ${
+                  fs !== "16px" ? "text-sm" : ""
+                }`}
               />
               <button
                 type="submit"

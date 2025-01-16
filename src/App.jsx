@@ -22,6 +22,7 @@ function App() {
   const [messages, setMessages] = useState({});
   const [isNewTopicModalOpen, setIsNewTopicModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [fontSizeParam, setFontSizeParam] = useState("16px");
 
   useEffect(() => {
     // Register user with socket server
@@ -112,6 +113,15 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const fontsize = sp.get("fs"); // world
+    if (fontsize) {
+      setFontSizeParam(fontsize);
+    }
+  }, []);
+
+  console.log(fontSizeParam)
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Mobile menu button */}
@@ -120,7 +130,7 @@ function App() {
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="lg:hidden fixed top-[24px] right-[12px] z-[2] p-2 bg-white rounded-full shadow-lg"
       >
-        <RecentChatIcon/>
+        <RecentChatIcon />
       </button>
       {/* )} */}
 
@@ -150,6 +160,7 @@ function App() {
           onSendMessage={sendMessage}
           onNewTopic={createTopic} // Add this prop
           setSelectedTopic={setSelectedTopic}
+          fs={fontSizeParam}
         />
       </div>
 
