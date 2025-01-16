@@ -139,13 +139,13 @@ function ChatWindow({
     <div className="flex flex-col h-full">
       {/* Topic header */}
       <div
-        className="bg-white border-b px-4 py-3 h-[116px]  fixed top-0 left-0 w-full z-[2]"
+        className="bg-white h-[116px]  fixed top-0 left-0 w-full z-[2] flex flex-col justify-between"
         style={{
           background:
             "linear-gradient(92.79deg, rgb(247 189 130) 26.68%, rgb(223, 128, 33) 112.35%)",
         }}
       >
-        <div className="flex items-center">
+        <div className="flex items-center px-4 py-3">
           <button
             onClick={() => setSelectedTopic("")}
             className="lg:hidden p-2 rounded-lg text-white mt-[16px] "
@@ -156,14 +156,15 @@ function ChatWindow({
             {topic}
           </h2>
         </div>
+        <div className="bg-white w-full rounded-t-[26px] h-[35px] "/>
       </div>
 
       {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto bg-white pt-[28px] rounded-tl-[28px] rounded-tr-[28px] relative z-[3] mt-[80px]"
+        className="flex-1 overflow-y-auto  rounded-t-[28px] relative z-[3] mt-[80px]"
       >
-        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 relative z-[4]">
           {messages.map((msg, idx) => (
             <div
               key={idx}
