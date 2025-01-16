@@ -139,7 +139,7 @@ function ChatWindow({
     <div className="flex flex-col h-full">
       {/* Topic header */}
       <div
-        className="bg-white border-b px-4 py-3 h-[116px]  fixed top-0 left-0 w-full"
+        className="bg-white border-b px-4 py-3 h-[116px]  fixed top-0 left-0 w-full z-10"
         style={{
           background:
             "linear-gradient(92.79deg, rgb(247 189 130) 26.68%, rgb(223, 128, 33) 112.35%)",
