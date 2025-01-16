@@ -224,7 +224,7 @@ function ChatWindow({
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Tanya Informasi"
                 className={`w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] outline-none mr-2 ${
-                  fs !== "16px" ? "text-sm" : ""
+                  fs !== "16px" ? "text-xs" : "text-xs"
                 }`}
               />
               <button
