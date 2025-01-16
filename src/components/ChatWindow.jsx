@@ -139,7 +139,7 @@ function ChatWindow({
     <div className="flex flex-col h-full">
       {/* Topic header */}
       <div
-        className="bg-white border-b px-4 py-3 h-[116px]  fixed top-0 left-0 w-full z-10"
+        className="bg-white border-b px-4 py-3 h-[116px]  fixed top-0 left-0 w-full z-[2]"
         style={{
           background:
             "linear-gradient(92.79deg, rgb(247 189 130) 26.68%, rgb(223, 128, 33) 112.35%)",
@@ -161,7 +161,7 @@ function ChatWindow({
       {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto bg-white pt-[28px] rounded-tl-[28px] rounded-tr-[28px] relative z-2 mt-[80px]"
+        className="flex-1 overflow-y-auto bg-white pt-[28px] rounded-tl-[28px] rounded-tr-[28px] relative z-[3] mt-[80px]"
       >
         <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
           {messages.map((msg, idx) => (
@@ -210,7 +210,7 @@ function ChatWindow({
       </div>
 
       {/* Message input */}
-      <div className="border-t bg-white fixed bottom-0 left-0 z-[50] w-full">
+      <div className="border-t bg-white fixed bottom-0 left-0 z-[4] w-full">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <form onSubmit={handleSubmit}>
             <div className="relative flex w-full">
