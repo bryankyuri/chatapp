@@ -136,10 +136,10 @@ function ChatWindow({
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pt-[80px]">
       {/* Topic header */}
       <div
-        className="bg-white h-[116px]  fixed top-0 left-0 w-full z-[4] flex flex-col justify-between"
+        className="bg-white h-[116px]  fixed top-0 left-0 w-full z-[2] flex flex-col justify-between"
         style={{
           background:
             "linear-gradient(92.79deg, rgb(247 189 130) 26.68%, rgb(223, 128, 33) 112.35%)",
@@ -162,9 +162,9 @@ function ChatWindow({
       {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto  rounded-t-[28px] relative z-[4] mt-[80px] pb-[80px]"
+        className="flex-1 overflow-y-auto  rounded-t-[28px] sticky z-[4] top-[80px] pb-[80px]"
       >
-        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6  z-[4]">
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 relative z-[3]">
           {messages.map((msg, idx) => (
             <div
               key={idx}
