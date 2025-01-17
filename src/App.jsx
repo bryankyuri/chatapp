@@ -128,7 +128,7 @@ function App() {
       {/* {isSidebarOpen || ( */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="lg:hidden fixed top-[24px] right-[12px] z-[3] p-2 bg-white rounded-full shadow-lg"
+        className="lg:hidden fixed top-[24px] right-[12px] z-[5] p-2 bg-white rounded-full shadow-lg"
       >
         <RecentChatIcon />
       </button>
