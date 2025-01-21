@@ -28,6 +28,7 @@ function ChatWindow({
   onNewTopic,
   setSelectedTopic,
   fs,
+  onReviewClick,
 }) {
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
@@ -139,7 +140,7 @@ function ChatWindow({
     <div className="flex flex-col h-full pt-[80px]">
       {/* Topic header */}
       <div
-        className="bg-white h-[116px]  fixed top-0 left-0 w-full z-[3] flex flex-col justify-between"
+        className="bg-white h-[116px]  fixed top-0 left-0 w-full z-[4] flex flex-col justify-between"
         style={{
           background:
             "linear-gradient(92.79deg, rgb(247 189 130) 26.68%, rgb(223, 128, 33) 112.35%)",
@@ -156,16 +157,15 @@ function ChatWindow({
             {topic}
           </h2>
         </div>
-        <div className="bg-white w-full rounded-t-[26px] h-[35px] "/>
       </div>
 
       {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1  rounded-t-[28px] sticky z-[4] top-[80px] pb-[80px] overflow-y-auto"
-        style={{height:"calc(100vh - 188px"}}
+        className="flex-1  rounded-t-[28px] sticky z-[4] top-[80px] pb-[80px] overflow-y-auto bg-white"
+        style={{ height: "calc(100vh - 188px" }}
       >
-        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 relative z-[3] " >
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 relative z-[3] ">
           {messages.map((msg, idx) => (
             <div
               key={idx}
@@ -173,30 +173,52 @@ function ChatWindow({
                 msg.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              <div
-                className={`max-w-2xl ${
-                  msg.role === "user" ? "order-2" : "order-1"
-                }`}
-              >
+              {msg.isReviewPrompt ? (
+                <>
+                  <div className={`max-w-2xl  order-1`}>
+                    <div
+                      className={`px-4 py-2 rounded-[24px] bg-chat-ai text-gray-800`}
+                    >
+                      <div className="relative z-[1]">
+                        <div>{msg.content}</div>
+                        <div>
+                          <button
+                            onClick={() => onReviewClick(topic)}
+                            className="text-blue-600 font-medium underline"
+                          >
+                            Submit Review
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <div
-                  className={`px-4 py-2 rounded-[24px] ${
-                    msg.role === "user"
-                      ? "bg-chat-user text-white"
-                      : isTyping
-                      ? "bg-none"
-                      : "bg-chat-ai text-gray-800"
+                  className={`max-w-2xl ${
+                    msg.role === "user" ? "order-2" : "order-1"
                   }`}
                 >
-                  <div className="relative z-[1]">{msg.content}</div>
-                </div>
-                {/* <div
+                  <div
+                    className={`px-4 py-2 rounded-[24px] ${
+                      msg.role === "user"
+                        ? "bg-chat-user text-white"
+                        : isTyping
+                        ? "bg-none"
+                        : "bg-chat-ai text-gray-800"
+                    }`}
+                  >
+                    <div className="relative z-[1]">{msg.content}</div>
+                  </div>
+                  {/* <div
                   className={`text-xs mt-1 text-gray-500 ${
                     msg.role === "user" ? "text-right" : "text-left"
                   }`}
                 >
                   {new Date(msg.timestamp).toLocaleTimeString()}
                 </div> */}
-              </div>
+                </div>
+              )}
             </div>
           ))}
           {isTyping && (

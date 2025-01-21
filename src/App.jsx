@@ -7,6 +7,7 @@ import NewTopicModal from "./components/NewTopicModal";
 import { Menu } from "lucide-react";
 import "./App.css";
 import { RecentChatIcon } from "./components/icons/RecentChat";
+import ReviewModal from "./components/ReviewModal";
 
 function App() {
   const [userId] = useState(() => {
@@ -23,6 +24,8 @@ function App() {
   const [isNewTopicModalOpen, setIsNewTopicModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [fontSizeParam, setFontSizeParam] = useState("16px");
+  const [reviewTopic, setReviewTopic] = useState(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
 
   useEffect(() => {
     // Register user with socket server
@@ -47,6 +50,25 @@ function App() {
       setTopics((prev) => [...prev, topic]);
       setSelectedTopic(topic);
       setIsNewTopicModalOpen(false);
+    });
+
+    socket.on('review_prompt', ({ topic, message }) => {
+      setMessages(prev => ({
+        ...prev,
+        [topic]: [
+          ...(prev[topic] || []),
+          { 
+            role: 'system', 
+            content: message,
+            isReviewPrompt: true, // Add this flag
+            timestamp: new Date().toISOString()
+          }
+        ]
+      }));
+    });
+
+    socket.on('review_submitted', ({ topic }) => {
+      setShowReviewModal(false);
     });
 
     const handleAiResponse = ({ topic, message, timestamp }) => {
@@ -80,6 +102,8 @@ function App() {
       socket.off("user_topics");
       socket.off("topic_created");
       socket.off("ai_response", handleAiResponse);
+      socket.off('review_prompt');
+      socket.off('review_submitted');
     };
   }, [userId]);
 
@@ -122,6 +146,19 @@ function App() {
   }, []);
 
   console.log(fontSizeParam)
+
+  const handleReviewClick = (topic) => {
+    setReviewTopic(topic);
+    setShowReviewModal(true);
+  };
+
+  const handleReviewSubmit = (rating) => {
+    socket.emit('submit_review', {
+      userId,
+      topic: reviewTopic,
+      rating
+    });
+  };
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Mobile menu button */}
@@ -161,8 +198,15 @@ function App() {
           onNewTopic={createTopic} // Add this prop
           setSelectedTopic={setSelectedTopic}
           fs={fontSizeParam}
+          onReviewClick={handleReviewClick}
         />
       </div>
+
+      <ReviewModal
+        isOpen={showReviewModal}
+        onClose={() => setShowReviewModal(false)}
+        onSubmit={handleReviewSubmit}
+      />
 
       <NewTopicModal
         isOpen={isNewTopicModalOpen}
