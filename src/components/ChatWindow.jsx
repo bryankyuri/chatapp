@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SendMessageIcons } from "./icons/send";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Star, X } from "lucide-react";
 
 const defaultTopics = [
   {
@@ -180,15 +180,38 @@ function ChatWindow({
                       className={`px-4 py-2 rounded-[24px] bg-chat-ai text-gray-800`}
                     >
                       <div className="relative z-[1]">
-                        <div>{msg.content}</div>
-                        <div>
-                          <button
-                            onClick={() => onReviewClick(topic)}
-                            className="text-blue-600 font-medium underline"
-                          >
-                            Submit Review
+                        <div className="flex justify-between mb-2">
+                          <div className="text-[14px] text-[#19191B] font-bold  mr-8">
+                            Seberapa membantu informasi dari Elevate?
+                          </div>
+                          <button>
+                            <X size={16} />
                           </button>
                         </div>
+                        <button onClick={() => onReviewClick(topic)}>
+                          <div className="flex justify-between min-w-[304px]">
+                            <div className="mb-1 text-[12px] text-[#8B8686]">
+                              Penilaianmu akan berpengaruh terhadap <br />
+                              peningkatan kualitas chatbot Elevate.
+                            </div>
+                            <div className="">
+                              <img src="/avatar.png" />
+                            </div>
+                          </div>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <div
+                                key={star}
+                                className="p-1 hover:scale-110 transition-transform"
+                              >
+                                <Star
+                                  size={16}
+                                  className={`${"text-gray-300"}`}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </button>
                       </div>
                     </div>
                   </div>
