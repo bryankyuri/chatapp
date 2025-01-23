@@ -34,6 +34,7 @@ function ChatWindow({
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [newTopic, setNewTopic] = useState("");
 
   const LoadingDots = () => (
     <div className="bg-white rounded-full px-4 py-4 shadow-md">
@@ -94,8 +95,8 @@ function ChatWindow({
           }}
         />
         <div className="flex-1 flex flex-col items-center justify-center p-4 bg-white rounded-[28px] relative z-2 mt-[80px]">
-          <div className="max-w-2xl w-full space-y-8">
-            <div className="text-center space-y-4">
+          <div className="max-w-2xl w-full ">
+            <div className="text-center ">
               <h2 className="text-2xl font-semibold text-gray-800">
                 Welcome to Elevate
               </h2>
@@ -105,12 +106,32 @@ function ChatWindow({
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="font-bold text-[16px] mb-1 mt-[80px]">Hallo, Nadia</div>
+
+            <div className="text-[14px] text-justify mb-4">
+              Kamu dapat menanyakan informasi atau meminta dokumen terkait{" "}
+              <span className="font-bold">
+                Working Outline (WO) & Guideline, Compliance
+              </span>
+              &nbsp;dan <span className="font-bold">informasi bisnis</span>{" "}
+              lainnya untuk menunjang pekerjaanmu
+            </div>
+            <div className="mb-4 text-[12px] text-[#8B8686]">
+              {" "}
+              Rekomendasi Topik
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
               {defaultTopics.map((defaultTopic) => (
                 <button
                   key={defaultTopic.title}
                   onClick={() => onNewTopic(defaultTopic.title)}
-                  className="p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all text-left group"
+                  className="p-4 border rounded-lg hover:border-blue-500 hover:shadow-md transition-all text-left group"
+                  style={{
+                    borderRight: "4px solid #DF80214D",
+                    background:
+                      "linear-gradient(257.86deg, #F7E8DA 2.79%, #FAF3EC 96.16%)",
+                  }}
                 >
                   <h3 className="font-medium text-gray-900 group-hover:text-blue-600">
                     {defaultTopic.title}
@@ -122,13 +143,30 @@ function ChatWindow({
               ))}
             </div>
 
-            <div className="text-center">
-              <button
-                onClick={() => onNewTopic()}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#e29241]"
-              >
-                Create New Topic
-              </button>
+            <div className="border-t bg-white fixed bottom-0 left-0 z-[4] w-full">
+              <div className="max-w-3xl mx-auto px-4 py-4">
+                <form onSubmit={() => onNewTopic(newTopic)}>
+                  <div className="relative flex w-full">
+                    <input
+                      type="text"
+                      value={newTopic}
+                      onChange={(e) => setNewTopic(e.target.value)}
+                      placeholder="Tanya Informasi"
+                      className={`w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] outline-none mr-2 ${
+                        fs !== "16px" ? "text-sm" : ""
+                      }`}
+                    />
+                    <button
+                      type="submit"
+                      className={`flex min-w-[40px] max-w-[40px] h-[40px] justify-center items-center rounded-full ${
+                        newMessage?.length > 0 ? "bg-[#F1D9C1]" : ""
+                      }`}
+                    >
+                      <SendMessageIcons isDisabled={newMessage?.length < 1} />
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
