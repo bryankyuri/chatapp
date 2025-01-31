@@ -250,7 +250,7 @@ const ChatStream = () => {
         className="w-full overflow-y-auto mb-4 space-y-4 pt-8 overflow-x-hidden px-4"
         style={{ height: "calc(100vh - 80px" }}
       >
-        <div className="w-full lg:max-w-[1024px] mx-auto">
+        <div className="w-full lg:max-w-[1024px] mx-auto space-y-6">
           {messages.map((message, index) => (
             <Message key={index} {...message} />
           ))}
