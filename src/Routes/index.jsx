@@ -30,7 +30,7 @@ const AppRoutes = () => {
       {userRole ? (
         <>
           <Progress isAnimating={isLoading} key={location.key} />
-          <TransitionGroup>
+          {/* <TransitionGroup>
             <CSSTransition
               classNames="fade"
               key={location.key}
@@ -43,7 +43,7 @@ const AppRoutes = () => {
                 setIsLoading(false);
               }}
               timeout={600}
-            >
+            > */}
               <Routes>
                 {isLogin && (
                   <>
@@ -58,8 +58,8 @@ const AppRoutes = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
-            </CSSTransition>
-          </TransitionGroup>
+            {/* </CSSTransition>
+          </TransitionGroup> */}
         </>
       ) : (
         <LoadingPage />
