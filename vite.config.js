@@ -1,42 +1,50 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: "autoUpdate",
       devOptions: {
-        enabled: true
+        enabled: true,
       },
       manifest: {
-        name: 'Chat App',
-        short_name: 'Chat',
-        description: 'Real-time chat application',
-        theme_color: '#ffffff',
+        name: "Chat App",
+        short_name: "Chat",
+        description: "Real-time chat application",
+        theme_color: "#ffffff",
         icons: [
           {
-            src: '/vite.svg',
-            sizes: '192x192',
-            type: 'image/svg+xml'
-          }
-        ]
+            src: "/vite.svg",
+            sizes: "192x192",
+            type: "image/svg+xml",
+          },
+        ],
       },
       workbox: {
-        runtimeCaching: [{
-          urlPattern: /^https:\/\/api\.*/i,
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'api-cache',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 7 // 1 week
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\.*/i,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "api-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 week
+              },
+              networkTimeoutSeconds: 10,
             },
-            networkTimeoutSeconds: 10
-          }
-        }]
-      }
-    })
-  ]
+          },
+        ],
+      },
+    }),
+  ],
+  css: {
+    modules: {
+      localsConvention: "camelCase",
+      generateScopedName: "[name]__[local]___[hash:base64:5]",
+    },
+  },
 });

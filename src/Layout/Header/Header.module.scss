@@ -1,0 +1,29 @@
+.header {
+  &Wrapper {
+    @apply w-full flex items-start;
+
+    &.desktop {
+      @apply h-[96px] px-4 items-center;
+      background: linear-gradient(
+        92.79deg,
+        rgb(247 189 130) 26.68%,
+        rgb(223, 128, 33) 112.35%
+      );
+    }
+    &.mobile {
+      @apply border-b px-4 pt-[20px] h-[116px] fixed top-0 left-0 w-full;
+      background: linear-gradient(
+        92.79deg,
+        rgb(247 189 130) 26.68%,
+        rgb(223, 128, 33) 112.35%
+      );
+    }
+  }
+  &Titles {
+    @apply text-lg font-medium ml-[4px] text-white;
+  }
+}
+
+.recentChat {
+  @apply flex p-2 bg-white rounded-full shadow-lg w-[40px] h-[40px];
+}

@@ -1,0 +1,4 @@
+.contentWrapper {
+  @apply w-full flex flex-col items-start justify-start pb-4 bg-white rounded-[28px] lg:rounded-none relative z-[2] lg:mt-0 mt-[80px] h-full lg:bg-[#fffaf5];
+  height: calc(100vh - 80px);
+}

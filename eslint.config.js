@@ -10,14 +10,23 @@ export default [
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        React: true,
+        JSX: true
+      },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
         sourceType: 'module',
       },
     },
-    settings: { react: { version: '18.3' } },
+    settings: { 
+      react: { 
+        version: '18.3',
+        runtime: 'automatic'
+      } 
+    },
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -29,10 +38,26 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
     },
   },
+  // Add this new configuration for SCSS files
+  {
+    files: ['**/*.scss'],
+    rules: {
+      'scss/at-rule-no-unknown': [
+        true,
+        {
+          ignoreAtRules: ['apply', 'tailwind', 'screen', 'layer']
+        }
+      ]
+    }
+  }
 ]

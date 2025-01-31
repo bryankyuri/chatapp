@@ -1,0 +1,18 @@
+.sideBar {
+  &Wrapper {
+    &.mobile {
+      @apply w-full h-screen transition-transform duration-300 ease-in-out top-0 bg-white fixed z-[3];
+    }
+    &.desktop {
+      @apply bg-white border
+    }
+    
+  }
+}
+
+.open {
+  @apply translate-y-0;
+}
+.close {
+  @apply translate-y-full;
+}

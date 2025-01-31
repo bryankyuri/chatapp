@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 function NewTopicModal({ isOpen, onClose, onCreateTopic }) {
   const [topic, setTopic] = useState('');
