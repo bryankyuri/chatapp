@@ -2,6 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { Send, FileText, Image as ImageIcon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { SendMessageIcons } from "./icons/send";
+import DOMPurify from "dompurify";
+import { processMarkdown } from "../lib/utils";
+
+
 
 const ChatStream = () => {
   const [messages, setMessages] = useState([]);
@@ -9,6 +13,7 @@ const ChatStream = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const themeStyles = useTheme();
+  const [isFirstChunk, setIsFirstChunk] = useState(true);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -17,6 +22,27 @@ const ChatStream = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const LoadingDots = () => (
+    <div className="bg-white rounded-full px-4 py-4 shadow-md">
+      <div className="flex items-center space-x-2">
+        <div className="flex space-x-1">
+          <div
+            className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0ms" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+            style={{ animationDelay: "150ms" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+            style={{ animationDelay: "300ms" }}
+          ></div>
+        </div>
+      </div>
+    </div>
+  );
 
   const parseChunkedResponse = (text) => {
     const jsonObjects = [];
@@ -85,7 +111,7 @@ const ChatStream = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "text/event-stream;charset=UTF-8",
             Authorization:
               "Bearer 8e7fd8cba3442ce97ad644c92b86ffd6-1ea8735481-ed8049ff299a7236d7290c4f94fe444c49ce2c1a6c49c52458",
           },
@@ -157,6 +183,7 @@ const ChatStream = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInputText("");
     setIsLoading(true);
+    setIsFirstChunk(true);
 
     let assistantMessage = {
       type: "assistant",
@@ -174,6 +201,7 @@ const ChatStream = () => {
 
           if (messages && messages[0]?.text?.body) {
             assistantMessage.content += messages[0].text.body;
+            setIsFirstChunk(false);
           }
 
           if (finish_reason === "stop") {
@@ -191,6 +219,7 @@ const ChatStream = () => {
       console.error("Error:", error);
     } finally {
       setIsLoading(false);
+      setIsFirstChunk(false);
     }
   };
 
@@ -229,7 +258,18 @@ const ChatStream = () => {
       <div
         className={`${themeStyles.chatBubbles.base} ${themeStyles.chatBubbles[type].bubble.base} ${themeStyles.chatBubbles[type].bubble.after}`}
       >
-        <div>{content}</div>
+        {type === "assistant" && content === "" && isFirstChunk ? (
+          <LoadingDots />
+        ) : (
+          <div 
+            className={`markdown-content ${type === 'user' ? 'text-white' : 'text-gray-800'}`}
+            dangerouslySetInnerHTML={{
+              __html: type === 'assistant' 
+                ? DOMPurify.sanitize(processMarkdown(content))
+                : content
+            }}
+          />
+        )}
 
         {type === "assistant" &&
           documents &&
@@ -268,12 +308,14 @@ const ChatStream = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Tanya Informasi"
                 className={`w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] outline-none mr-2 lg:bg-transparent`}
+                disabled={isLoading}
               />
               <button
                 type="submit"
                 className={`flex min-w-[40px] max-w-[40px] h-[40px] justify-center items-center rounded-full ${
                   inputText?.length > 0 ? "bg-[#F1D9C1]" : ""
                 }`}
+                disabled={isLoading}
               >
                 <SendMessageIcons isDisabled={inputText?.length < 1} />
               </button>

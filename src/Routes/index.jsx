@@ -9,6 +9,8 @@ import { Progress } from "../components/Nprogress";
 import Cookies from "js-cookie";
 import { LoadingPage } from "../components/Misc/LoadingPage";
 import ChatPage from "../Pages/Chat";
+import TestPage from "../Pages/Test";
+import ApiStreamClient from "../Pages/api";
 
 const AppRoutes = () => {
   const isLogin = true;
@@ -57,6 +59,8 @@ const AppRoutes = () => {
                 )}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="*" element={<NotFoundPage />} />
+                <Route path="/test" element={<TestPage />} />
+                <Route path="/api" element={<ApiStreamClient />} />
               </Routes>
             {/* </CSSTransition>
           </TransitionGroup> */}
