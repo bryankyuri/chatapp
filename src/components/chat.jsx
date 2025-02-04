@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Send, FileText, Image as ImageIcon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { SendMessageIcons } from "./icons/send";
@@ -13,11 +13,20 @@ const ChatStream = (props) => {
   const messagesEndRef = useRef(null);
   const themeStyles = useTheme();
   const [isFirstChunk, setIsFirstChunk] = useState(true);
-  const { caseID } = props;
+  const { caseID, handleNewPromptChat, newPromptChat } = props;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (newPromptChat) {
+      setIsLoading(true);
+      console.log(newPromptChat);
+
+      handleSubmitNewPrompt();
+    }
+  }, [newPromptChat]);
 
   useEffect(() => {
     scrollToBottom();
@@ -47,7 +56,6 @@ const ChatStream = (props) => {
   const parseChunkedResponse = (text) => {
     const jsonObjects = [];
     let buffer = text;
-     
 
     while (buffer.length > 0) {
       try {
@@ -114,8 +122,7 @@ const ChatStream = (props) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              `Bearer ${cookiesToken}`,
+            Authorization: `Bearer ${cookiesToken}`,
           },
           body: JSON.stringify({
             caseID: caseID,
@@ -173,13 +180,11 @@ const ChatStream = (props) => {
     }
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!inputText.trim()) return;
-
+  const handleSubmitNewPrompt = useCallback(async () => {
+    const promptText = newPromptChat;
     const userMessage = {
       role: "user",
-      content: inputText,
+      content: promptText,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -197,7 +202,61 @@ const ChatStream = (props) => {
     setMessages((prev) => [...prev, assistantMessage]);
 
     try {
-      await streamAPI(inputText, (chunk) => {
+      await streamAPI(promptText, (chunk) => {
+        if (chunk.data) {
+          const { messages, document, images, finish_reason } = chunk.data;
+
+          if (messages && messages[0]?.text?.body) {
+            assistantMessage.content += messages[0].text.body;
+            setIsFirstChunk(false);
+          }
+
+          if (finish_reason === "stop") {
+            if (document) assistantMessage.documents = document;
+            if (images) assistantMessage.images = images;
+          }
+
+          handleNewPromptChat("");
+
+          setMessages((prev) => [
+            ...prev.slice(0, -1),
+            { ...assistantMessage },
+          ]);
+        }
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+      setIsFirstChunk(false);
+    }
+  }, []);
+
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+    const promptText = inputText;
+    const userMessage = {
+      role: "user",
+      content: promptText,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputText("");
+    setIsLoading(true);
+    setIsFirstChunk(true);
+
+    let assistantMessage = {
+      role: "assistant",
+      content: "",
+      documents: [],
+      images: [],
+    };
+
+    setMessages((prev) => [...prev, assistantMessage]);
+
+    try {
+      await streamAPI(promptText, (chunk) => {
         if (chunk.data) {
           const { messages, document, images, finish_reason } = chunk.data;
 
@@ -223,7 +282,7 @@ const ChatStream = (props) => {
       setIsLoading(false);
       setIsFirstChunk(false);
     }
-  };
+  }, []);
 
   const DocumentItem = ({ document }) => (
     <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg mt-2">

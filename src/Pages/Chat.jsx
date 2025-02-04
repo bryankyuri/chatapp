@@ -6,22 +6,22 @@ import Cookies from "js-cookie";
 
 export const ChatPage = () => {
   const getParams = useParams();
-  const { handleLoading, isLoading, fetchRecentChat } = useContext(AppContext);
+  const {
+    handleLoading,
+    isLoading,
+    fetchRecentChat,
+    newPromptChat,
+    handleNewPromptChat,
+  } = useContext(AppContext);
 
   const [detailMessage, setDetailMessage] = useState([]);
 
   const handleGetDetailMessage = useCallback(async () => {
     const myHeaders = new Headers();
     const cookiesToken = Cookies.get("ut");
-    myHeaders.append(
-      "Authorization",
-      `Bearer ${cookiesToken}`
-    );
+    myHeaders.append("Authorization", `Bearer ${cookiesToken}`);
 
-    myHeaders.append(
-      "Content-Type",
-      "application/json; charset=UTF-8"
-    );
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
 
     const requestOptions = {
       method: "GET",
@@ -55,15 +55,24 @@ export const ChatPage = () => {
   useEffect(() => {
     handleLoading(true);
     fetchRecentChat();
-    handleGetDetailMessage();
+    if (!newPromptChat) {
+      handleGetDetailMessage();
+    } else{
+      handleLoading(false);
+    }
   }, [handleGetDetailMessage]);
-  console.log(detailMessage)
+  console.log(detailMessage);
   return (
     <>
       {isLoading ? (
         ""
       ) : (
-        <ChatStream caseID={getParams.id} detailMessage={detailMessage} />
+        <ChatStream
+          caseID={getParams.id}
+          detailMessage={detailMessage}
+          newPromptChat={newPromptChat}
+          handleNewPromptChat={handleNewPromptChat}
+        />
       )}
     </>
   );

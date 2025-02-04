@@ -3,9 +3,8 @@ import { SendMessageIcons } from "./icons/send";
 
 function WelcomeChat(props) {
   const [newMessage, setNewMessage] = useState("");
-  const { popularTopic, isLoading } = props;
+  const { popularTopic, isLoading, handleSubmit } = props;
 
-  const handleSubmit = () => {};
   return (
     <>
       <div
@@ -42,33 +41,38 @@ function WelcomeChat(props) {
 
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
             {popularTopic.map((defaultTopic, index) => {
-                  return (
-                    <button
-                      key={defaultTopic.topic}
-                      // onClick={() => onNewTopic(defaultTopic.title)}
-                      className="p-4 border rounded-lg hover:border-orange-500 hover:shadow-md transition-all text-left group"
-                      style={{
-                        borderRight: "4px solid #DF80214D",
-                        background:
-                          "linear-gradient(257.86deg, #F7E8DA 2.79%, #FAF3EC 96.16%)",
-                      }}
-                    >
-                      <h3 className="font-medium text-gray-900 group-hover:text-orange-500">
-                        {defaultTopic.topic}
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {defaultTopic.sample_question}
-                      </p>
-                    </button>
-                  );
-                })}
+              return (
+                <button
+                  key={defaultTopic.topic}
+                  onClick={() => handleSubmit(defaultTopic.sample_question)}
+                  className="p-4 border rounded-lg hover:border-orange-500 hover:shadow-md transition-all text-left group"
+                  style={{
+                    borderRight: "4px solid #DF80214D",
+                    background:
+                      "linear-gradient(257.86deg, #F7E8DA 2.79%, #FAF3EC 96.16%)",
+                  }}
+                >
+                  <h3 className="font-medium text-gray-900 group-hover:text-orange-500">
+                    {defaultTopic.topic}
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {defaultTopic.sample_question}
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
       <div className="border-t lg:border-none bg-white sticky bottom-0 left-0 z-[4] w-full lg:bg-transparent">
         <div className="w-full mx-auto px-4 py-4">
-          <form onSubmit={handleSubmit}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(newMessage);
+            }}
+          >
             <div className="relative flex w-full lg:w-[95%] lg:mx-auto lg:bg-white lg:rounded-full lg:px-4">
               <input
                 type="text"

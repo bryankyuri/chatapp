@@ -11,6 +11,7 @@ export const AppProvider = ({ children }) => {
   const [isModalForbidden, setIsModalForbidden] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const [recentChat, setRecentChat] = useState([]);
+  const [newPromptChat, setNewPromptChat] = useState("");
   const screenResize = useCallback(() => {
     setScreenWidth(screen.width);
     setScreenHeight(screen.height);
@@ -81,6 +82,10 @@ export const AppProvider = ({ children }) => {
       console.error("Error fetching recent chat:", error);
     }
   }, []);
+
+  const handleNewPromptChat = (value) => {
+    setNewPromptChat(value)
+  };
   const isMobile = screenWidth < 1270;
   const deviceType =
     screenWidth >= 1270 ? "desktop" : screenWidth >= 744 ? "mobile" : "mobile";
@@ -101,6 +106,8 @@ export const AppProvider = ({ children }) => {
         triggerModalForbidden,
         fetchRecentChat,
         recentChat,
+        newPromptChat,
+        handleNewPromptChat
       }}
     >
       {isLoading && <LoadingPage />}
