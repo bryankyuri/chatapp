@@ -22,6 +22,7 @@ export default defineConfig({
             type: "image/svg+xml",
           },
         ],
+        start_url: "",
       },
       workbox: {
         runtimeCaching: [
@@ -41,6 +42,11 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    hmr: {
+      overlay: false, // Disable the error overlay
+    },
+  },
   css: {
     modules: {
       localsConvention: "camelCase",

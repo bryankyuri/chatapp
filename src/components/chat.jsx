@@ -5,15 +5,14 @@ import { SendMessageIcons } from "./icons/send";
 import DOMPurify from "dompurify";
 import { processMarkdown } from "../lib/utils";
 
-
-
-const ChatStream = () => {
-  const [messages, setMessages] = useState([]);
+const ChatStream = (props) => {
+  const [messages, setMessages] = useState([...props.detailMessage]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const themeStyles = useTheme();
   const [isFirstChunk, setIsFirstChunk] = useState(true);
+  const { caseID } = props;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -116,7 +115,7 @@ const ChatStream = () => {
               "Bearer 8e7fd8cba3442ce97ad644c92b86ffd6-1ea8735481-ed8049ff299a7236d7290c4f94fe444c49ce2c1a6c49c52458",
           },
           body: JSON.stringify({
-            caseID: "",
+            caseID: caseID,
             channelType: "website",
             channelID: "0001",
             channelName: "Elevate",
@@ -125,7 +124,7 @@ const ChatStream = () => {
               contactName: "",
             },
             message: {
-              id: "chat-01",
+              id: new Date().getTime(),
               type: "text",
               text: {
                 body: message,
@@ -176,7 +175,7 @@ const ChatStream = () => {
     if (!inputText.trim()) return;
 
     const userMessage = {
-      type: "user",
+      role: "user",
       content: inputText,
     };
 
@@ -186,7 +185,7 @@ const ChatStream = () => {
     setIsFirstChunk(true);
 
     let assistantMessage = {
-      type: "assistant",
+      role: "assistant",
       content: "",
       documents: [],
       images: [],
@@ -253,31 +252,46 @@ const ChatStream = () => {
     </div>
   );
 
-  const Message = ({ type, content, documents, images }) => (
-    <div className={`${themeStyles.chatBubbles[type].wrapper}`}>
+  const Message = ({ role, content, documents, images }) => (
+    <div className={`${themeStyles.chatBubbles[role].wrapper}`}>
       <div
-        className={`${themeStyles.chatBubbles.base} ${themeStyles.chatBubbles[type].bubble.base} ${themeStyles.chatBubbles[type].bubble.after}`}
+        className={`${themeStyles.chatBubbles.base} ${themeStyles.chatBubbles[role].bubble.base} ${themeStyles.chatBubbles[role].bubble.after}`}
       >
-        {type === "assistant" && content === "" && isFirstChunk ? (
+        {role === "assistant" && content === "" && isFirstChunk ? (
           <LoadingDots />
         ) : (
-          <div 
-            className={`markdown-content ${type === 'user' ? 'text-white' : 'text-gray-800'}`}
+          <div
+            className={`markdown-content ${
+              role === "user" ? "text-white" : "text-gray-800"
+            }`}
             dangerouslySetInnerHTML={{
-              __html: type === 'assistant' 
-                ? DOMPurify.sanitize(processMarkdown(content))
-                : content
+              __html:
+                role === "assistant"
+                  ? DOMPurify.sanitize(processMarkdown(content), {
+                      ADD_TAGS: ["svg", "path", "line", "polyline", "circle"],
+                      ADD_ATTR: [
+                        "stroke",
+                        "stroke-width",
+                        "stroke-linecap",
+                        "stroke-linejoin",
+                        "points",
+                        "fill",
+                        "viewBox",
+                        "onclick",
+                      ],
+                    })
+                  : content,
             }}
           />
         )}
 
-        {type === "assistant" &&
+        {role === "assistant" &&
           documents &&
           documents.map((doc, index) => (
             <DocumentItem key={index} document={doc} />
           ))}
 
-        {type === "assistant" && images && images.length > 0 && (
+        {role === "assistant" && images && images.length > 0 && (
           <ImageGrid images={images} />
         )}
       </div>

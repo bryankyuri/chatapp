@@ -1,181 +1,83 @@
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { socket } from "../utils/socket";
-import TopicsList from "../components/TopicList";
-import ChatWindow from "../components/ChatWindow";
-import NewTopicModal from "../components/NewTopicModal";
+import { useState, useEffect, useContext, useCallback } from "react";
 import "../App.css";
-import { RecentChatIcon } from "../components/icons/RecentChat";
-import ReviewModal from "../components/ReviewModal";
-import ChatStream from "../components/chat";
+import { AppContext } from "../context/AppContext";
+import WelcomeChat from "../components/Welcome";
 
 export const Home = () => {
-  const [userId] = useState(() => {
-    const savedId = localStorage.getItem("chatUserId");
-    if (savedId) return savedId;
-    const newId = uuidv4();
-    localStorage.setItem("chatUserId", newId);
-    return newId;
-  });
+  // const [userId] = useState(() => {
+  //   const savedId = localStorage.getItem("chatUserId");
+  //   if (savedId) return savedId;
+  //   const newId = uuidv4();
+  //   localStorage.setItem("chatUserId", newId);
+  //   return newId;
+  // });
 
-  const [topics, setTopics] = useState([]);
-  const [selectedTopic, setSelectedTopic] = useState(null);
-  const [messages, setMessages] = useState({});
-  const [isNewTopicModalOpen, setIsNewTopicModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [fontSizeParam, setFontSizeParam] = useState("16px");
   const [reviewTopic, setReviewTopic] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [popularTopic, setPopularTopic] = useState([]);
+  const { handleLoading, isLoading, fetchRecentChat } = useContext(AppContext);
+
+  const handleGetPopularTopic = useCallback(async () => {
+    const myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      "Bearer 1036b115929138b12407efb154e17738-5554adcc4a-3452057b0a97bc726d8c5fefdf72aa45eb19b7c003b612cc0a"
+    );
+
+    myHeaders.append("Content-Type", "application/json; charset=UTF-8");
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    try {
+      const response = await fetch(
+        `https://dev.api.asisten.ai/api/elevate/YT781HjqsTR/677f88dc-c440-8007-96bd-6e86883e43ed/recommendation`,
+        requestOptions
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      // Extract the 'detail' array from the response
+      const dataRecommendation = result.data.recommendation;
+
+      // Store the detail array in state
+      setPopularTopic(dataRecommendation);
+    } catch (error) {
+      console.error("Error fetching detail message:", error);
+    }
+    handleLoading(false);
+  }, []);
 
   useEffect(() => {
     // Register user with socket server
-    socket.emit("register", userId);
-
-    // Request notification permission
-    if ("Notification" in window) {
-      Notification.requestPermission();
-    }
-
-    // Socket event listeners
-    socket.on("registered", ({ userId }) => {
-      console.log("Registered with server:", userId);
-      socket.emit("get_topics", { userId });
-    });
-
-    socket.on("user_topics", ({ topics }) => {
-      setTopics(topics);
-    });
-
-    socket.on("topic_created", ({ topic }) => {
-      setTopics((prev) => [...prev, topic]);
-      setSelectedTopic(topic);
-      setIsNewTopicModalOpen(false);
-    });
-
-    socket.on('review_prompt', ({ topic, message }) => {
-      setMessages(prev => ({
-        ...prev,
-        [topic]: [
-          ...(prev[topic] || []),
-          { 
-            role: 'system', 
-            content: message,
-            isReviewPrompt: true, // Add this flag
-            timestamp: new Date().toISOString()
-          }
-        ]
-      }));
-    });
-
-    socket.on('review_submitted', ({ topic }) => {
-      setShowReviewModal(false);
-    });
-
-    const handleAiResponse = ({ topic, message, timestamp }) => {
-      // Add small delay to make typing indicator visible
-      setTimeout(() => {
-        setMessages((prev) => ({
-          ...prev,
-          [topic]: [
-            ...(prev[topic] || []),
-            { role: "assistant", content: message, timestamp },
-          ],
-        }));
-      }, 500);
-
-      if (
-        !document.hasFocus() &&
-        "Notification" in window &&
-        Notification.permission === "granted"
-      ) {
-        new Notification("New AI Response", {
-          body: `${topic}: ${message.substring(0, 100)}...`,
-          icon: "/vite.svg",
-        });
-      }
-    };
-
-    socket.on("ai_response", handleAiResponse);
-
-    return () => {
-      socket.off("registered");
-      socket.off("user_topics");
-      socket.off("topic_created");
-      socket.off("ai_response", handleAiResponse);
-      socket.off('review_prompt');
-      socket.off('review_submitted');
-    };
-  }, [userId]);
-
-  const createTopic = (defaultTopic) => {
-    if (defaultTopic) {
-      // If a default topic is selected
-      socket.emit("create_topic", { userId, topic: defaultTopic });
-    } else {
-      // If user wants to create custom topic
-      setIsNewTopicModalOpen(true);
-    }
-  };
-
-  const sendMessage = (message) => {
-    if (!message.trim() || !selectedTopic) return;
-
-    // Add user message to local state
-    setMessages((prev) => ({
-      ...prev,
-      [selectedTopic]: [
-        ...(prev[selectedTopic] || []),
-        { role: "user", content: message, timestamp: new Date().toISOString() },
-      ],
-    }));
-
-    // Send message to server
-    socket.emit("chat_message", {
-      userId,
-      topic: selectedTopic,
-      message,
-    });
-  };
-
-  useEffect(() => {
-    const sp = new URLSearchParams(window.location.search);
-    const fontsize = sp.get("fs"); // world
-    if (fontsize) {
-      setFontSizeParam(fontsize);
-    }
+    handleLoading(true);
+    handleGetPopularTopic();
+    fetchRecentChat();
+    handleLoading(false);
   }, []);
-
-  console.log(fontSizeParam)
 
   const handleReviewClick = (topic) => {
     setReviewTopic(topic);
     setShowReviewModal(true);
   };
 
-  const handleReviewSubmit = (rating) => {
-    socket.emit('submit_review', {
-      userId,
-      topic: reviewTopic,
-      rating
-    });
-  };
+  const handleReviewSubmit = (rating) => {};
   return (
     <div className="w-full flex h-screen overflow-hidden">
       {/* Main chat area */}
       <div className="flex-1 flex flex-col h-full lg:pl-0">
-        <ChatWindow
-          topic={selectedTopic}
-          messages={messages[selectedTopic] || []}
-          onSendMessage={sendMessage}
-          onNewTopic={createTopic} // Add this prop
-          setSelectedTopic={setSelectedTopic}
-          fs={fontSizeParam}
-          onReviewClick={handleReviewClick}
-        />
+        {isLoading || <WelcomeChat popularTopic={popularTopic} /> }
+        
       </div>
-
     </div>
   );
-}
+};
 
 export default Home;

@@ -18,6 +18,7 @@ export const FixedNavigationLayout = () => {
     headerTitle,
     setShowSideBar,
     showSideBar,
+    recentChat
   } = useContext(AppContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ export const FixedNavigationLayout = () => {
           showSideBar={showSideBar}
           setShowSideBar={setShowSideBar}
           deviceType={deviceType}
+          recentChat={recentChat}
         />
         <div className="w-full">
           {/* {isLoading ? ( */}
