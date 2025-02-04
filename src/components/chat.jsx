@@ -4,6 +4,7 @@ import { useTheme } from "../context/ThemeContext";
 import { SendMessageIcons } from "./icons/send";
 import DOMPurify from "dompurify";
 import { processMarkdown } from "../lib/utils";
+import Cookies from "js-cookie";
 
 const ChatStream = (props) => {
   const [messages, setMessages] = useState([...props.detailMessage]);
@@ -46,6 +47,7 @@ const ChatStream = (props) => {
   const parseChunkedResponse = (text) => {
     const jsonObjects = [];
     let buffer = text;
+     
 
     while (buffer.length > 0) {
       try {
@@ -104,15 +106,16 @@ const ChatStream = (props) => {
   };
 
   async function streamAPI(message, onChunk) {
+    const cookiesToken = Cookies.get("ut");
     try {
       const response = await fetch(
         "https://dev.api.asisten.ai/api/elevate/YT781HjqsTR/677f88dc-c440-8007-96bd-6e86883e43ed?channel=base.1&mode=chunk",
         {
           method: "POST",
           headers: {
-            "Content-Type": "text/event-stream;charset=UTF-8",
+            "Content-Type": "application/json",
             Authorization:
-              "Bearer 8e7fd8cba3442ce97ad644c92b86ffd6-1ea8735481-ed8049ff299a7236d7290c4f94fe444c49ce2c1a6c49c52458",
+              `Bearer ${cookiesToken}`,
           },
           body: JSON.stringify({
             caseID: caseID,
@@ -124,7 +127,7 @@ const ChatStream = (props) => {
               contactName: "",
             },
             message: {
-              id: new Date().getTime(),
+              id: `chat-${new Date().getTime()}`,
               type: "text",
               text: {
                 body: message,

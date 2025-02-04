@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import ChatStream from "../components/chat";
+import Cookies from "js-cookie";
 
 export const ChatPage = () => {
   const getParams = useParams();
@@ -11,9 +12,10 @@ export const ChatPage = () => {
 
   const handleGetDetailMessage = useCallback(async () => {
     const myHeaders = new Headers();
+    const cookiesToken = Cookies.get("ut");
     myHeaders.append(
       "Authorization",
-      "Bearer 1036b115929138b12407efb154e17738-5554adcc4a-3452057b0a97bc726d8c5fefdf72aa45eb19b7c003b612cc0a"
+      `Bearer ${cookiesToken}`
     );
 
     myHeaders.append(
@@ -61,7 +63,7 @@ export const ChatPage = () => {
       {isLoading ? (
         ""
       ) : (
-        <ChatStream caseId={getParams.id} detailMessage={detailMessage} />
+        <ChatStream caseID={getParams.id} detailMessage={detailMessage} />
       )}
     </>
   );

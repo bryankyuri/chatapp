@@ -6,7 +6,6 @@ function WelcomeChat(props) {
   const { popularTopic, isLoading } = props;
 
   const handleSubmit = () => {};
-  console.log(popularTopic)
   return (
     <>
       <div
