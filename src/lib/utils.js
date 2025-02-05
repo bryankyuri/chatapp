@@ -41,15 +41,14 @@ const getFileIcon = (extension) => {
   }
 };
 
-export const getFileNameFromUrl = (url) =>{
+export const getFileNameFromUrl = (url) => {
   // Split the URL by '/' and get the last part
-  const parts = url.split('/');
+  const parts = url.split("/");
   const fileName = parts[parts.length - 1];
 
   // Remove any query parameters or fragments (e.g., '?foo=bar' or '#section')
-  return fileName.split('?')[0].split('#')[0];
-}
-
+  return fileName.split("?")[0].split("#")[0];
+};
 
 const isDocumentUrl = (url) => /\.(doc|docx|ppt|pptx|xls|xlsx|pdf)$/i.test(url);
 const getFileExtension = (url) => url.split(".").pop().toLowerCase();
@@ -213,24 +212,27 @@ export const processMarkdown = (content) => {
                 <div class="flex items-start gap-3">
                   <div class="flex-shrink-0">${getFileIcon(extension)}</div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="font-medium text-base mb-1 truncate" title="${getFileNameFromUrl(url)}">${
-                      docInfo ? getFileNameFromUrl(url) : text
-                    }</h4>
+                    <h4 class="font-medium text-base mb-1 truncate" title="${getFileNameFromUrl(
+                      url
+                    )}">${docInfo ? getFileNameFromUrl(url) : text}</h4>
                     <p class="text-sm text-gray-500 mb-2">${extension.toUpperCase()} Document ${
             docInfo ? `• ${docInfo.size}` : ""
           }</p>
                     <div class="flex flex-wrap gap-2">
-                      <a
-                        href="${extension === "pdf" ? url : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`}" 
+                      <button 
+                         onclick="window.open('${
+                           extension === "pdf"
+                             ? url
+                             : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`
+                         }')"
                         class="inline-flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
-                        target="_blank"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                           <circle cx="12" cy="12" r="3"/>
                         </svg>
                         Preview
-                      </a>
+                      </button>
                       <a 
                         href="${url}" 
                         download
