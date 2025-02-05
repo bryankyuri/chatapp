@@ -220,16 +220,17 @@ export const processMarkdown = (content) => {
             docInfo ? `• ${docInfo.size}` : ""
           }</p>
                     <div class="flex flex-wrap gap-2">
-                      <button 
-                        onclick="window.previewDocument('${url}', '${safeTitle}')"
+                      <a
+                        href="${extension === "pdf" ? url : `https://view.officeapps.live.com/op/embed.aspx?src=${url}`}" 
                         class="inline-flex items-center gap-1 px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                        target="_blank"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                           <circle cx="12" cy="12" r="3"/>
                         </svg>
                         Preview
-                      </button>
+                      </a>
                       <a 
                         href="${url}" 
                         download
