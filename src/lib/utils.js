@@ -41,6 +41,16 @@ const getFileIcon = (extension) => {
   }
 };
 
+export const getFileNameFromUrl = (url) =>{
+  // Split the URL by '/' and get the last part
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1];
+
+  // Remove any query parameters or fragments (e.g., '?foo=bar' or '#section')
+  return fileName.split('?')[0].split('#')[0];
+}
+
+
 const isDocumentUrl = (url) => /\.(doc|docx|ppt|pptx|xls|xlsx|pdf)$/i.test(url);
 const getFileExtension = (url) => url.split(".").pop().toLowerCase();
 
@@ -203,8 +213,8 @@ export const processMarkdown = (content) => {
                 <div class="flex items-start gap-3">
                   <div class="flex-shrink-0">${getFileIcon(extension)}</div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="font-medium text-base mb-1 truncate">${
-                      docInfo ? `Download ${docInfo.format}` : text
+                    <h4 class="font-medium text-base mb-1 truncate" title="${getFileNameFromUrl(url)}">${
+                      docInfo ? getFileNameFromUrl(url) : text
                     }</h4>
                     <p class="text-sm text-gray-500 mb-2">${extension.toUpperCase()} Document ${
             docInfo ? `• ${docInfo.size}` : ""
