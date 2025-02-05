@@ -9,14 +9,22 @@ const ChatStream = (props) => {
   const [messages, setMessages] = useState([...props.detailMessage]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-
   const [isFirstChunk, setIsFirstChunk] = useState(true);
   const { caseID, handleNewPromptChat, newPromptChat } = props;
+  const messagesEndRef = useRef(null);
+  const textareaRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "inherit";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${scrollHeight}px`;
+    }
+  }, [inputText]);
 
   useEffect(() => {
     if (newPromptChat) {
@@ -262,6 +270,14 @@ const ChatStream = (props) => {
     }
   };
 
+  const handleKeyPress = (e) => {
+    console.log(e.key)
+    console.log(e.shiftKey)
+    if (e.key === 'Enter' && !e.shiftKey) {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <>
       <div
@@ -270,11 +286,7 @@ const ChatStream = (props) => {
       >
         <div className="w-full lg:max-w-[1024px] mx-auto space-y-6">
           {messages.map((message, index) => (
-            <Message
-              key={index}
-              {...message}
-              isFirstChunk={isFirstChunk}
-            />
+            <Message key={index} {...message} isFirstChunk={isFirstChunk} />
           ))}
           <div ref={messagesEndRef} />
         </div>
@@ -282,27 +294,38 @@ const ChatStream = (props) => {
 
       <div className="border-t lg:border-none bg-white sticky bottom-0 left-0 z-[4] w-full lg:bg-transparent">
         <div className="w-full mx-auto px-4 py-4">
-          <form onSubmit={handleSubmit}>
-            <div className="relative flex w-full lg:w-[95%] lg:mx-auto lg:bg-white lg:rounded-full lg:px-4">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="Tanya Informasi"
-                className={`w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] outline-none mr-2 lg:bg-transparent`}
-                disabled={isLoading}
-              />
-              <button
-                type="submit"
-                className={`flex min-w-[40px] max-w-[40px] h-[40px] justify-center items-center rounded-full ${
-                  inputText?.length > 0 ? "bg-[#F1D9C1]" : ""
-                }`}
-                disabled={isLoading}
-              >
-                <SendMessageIcons isDisabled={inputText?.length < 1} />
-              </button>
-            </div>
-          </form>
+          <div className="relative flex w-full lg:w-[95%] lg:mx-auto lg:bg-white lg:rounded-[35px] lg:px-4 lg:py-4 items-end">
+            <textarea
+              ref={textareaRef}
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyPress={(e) => handleKeyPress(e)}
+              placeholder="Tanya Informasi"
+              rows="1"
+              className="w-full px-6 h-[40px] flex justify-start items-center rounded-[25px] bg-[#F4F4F4] resize-none outline-none py-3 min-h-[40px] max-h-48 overflow-y-auto mr-2 lg:bg-transparent"
+              style={{
+                lineHeight: "1.5",
+              }}
+              disabled={isLoading}
+            />
+            {/* <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Tanya Informasi"
+              className={`w-full px-4 h-[40px] flex justify-start items-center rounded-full bg-[#F4F4F4] resize-none outline-none py-2 min-h-[40px] max-h-48 overflow-y-auto mr-2 lg:bg-transparent`}
+              disabled={isLoading}
+            /> */}
+            <button
+              onClick={() => handleSubmit}
+              className={`flex min-w-[40px] max-w-[40px] h-[40px] justify-center items-center rounded-full ${
+                inputText?.length > 0 ? "bg-[#F1D9C1]" : ""
+              }`}
+              disabled={isLoading}
+            >
+              <SendMessageIcons isDisabled={inputText?.length < 1} />
+            </button>
+          </div>
         </div>
       </div>
     </>
