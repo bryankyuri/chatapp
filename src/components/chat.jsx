@@ -33,22 +33,20 @@ const ChatStream = (props) => {
   }, [messages]);
 
   const LoadingDots = () => (
-    <div className="bg-white rounded-full px-4 py-4 shadow-md">
-      <div className="flex items-center space-x-2">
-        <div className="flex space-x-1">
-          <div
-            className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
-            style={{ animationDelay: "0ms" }}
-          ></div>
-          <div
-            className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
-            style={{ animationDelay: "150ms" }}
-          ></div>
-          <div
-            className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
-            style={{ animationDelay: "300ms" }}
-          ></div>
-        </div>
+    <div className="flex items-center space-x-2">
+      <div className="flex space-x-1">
+        <div
+          className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0ms" }}
+        ></div>
+        <div
+          className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "150ms" }}
+        ></div>
+        <div
+          className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "300ms" }}
+        ></div>
       </div>
     </div>
   );
@@ -232,7 +230,7 @@ const ChatStream = (props) => {
     }
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputText.trim()) return;
     const promptText = inputText;
@@ -282,7 +280,7 @@ const ChatStream = (props) => {
       setIsLoading(false);
       setIsFirstChunk(false);
     }
-  }, []);
+  };
 
   const DocumentItem = ({ document }) => (
     <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg mt-2">
@@ -314,6 +312,14 @@ const ChatStream = (props) => {
     </div>
   );
 
+  const handlePreviewDocument = (src, title) => {
+    console.log(src, title)
+  }
+
+  const handlePreviewImage = (src) => {
+    
+  }
+
   const Message = ({ role, content, documents, images }) => (
     <div className={`${themeStyles.chatBubbles[role].wrapper}`}>
       <div
@@ -329,7 +335,7 @@ const ChatStream = (props) => {
             dangerouslySetInnerHTML={{
               __html:
                 role === "assistant"
-                  ? DOMPurify.sanitize(processMarkdown(content), {
+                  ? DOMPurify.sanitize(processMarkdown(content, handlePreviewDocument, handlePreviewImage), {
                       ADD_TAGS: ["svg", "path", "line", "polyline", "circle"],
                       ADD_ATTR: [
                         "stroke",
