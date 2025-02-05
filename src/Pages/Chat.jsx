@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import ChatStream from "../components/chat";
+import ChatStream from "../components/Chat";
 import Cookies from "js-cookie";
 
 export const ChatPage = () => {

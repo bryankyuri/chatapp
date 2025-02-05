@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Send, FileText, Image as ImageIcon } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
+import { useState, useRef, useEffect, useCallback } from "react";
+
 import { SendMessageIcons } from "./icons/send";
-import DOMPurify from "dompurify";
-import { processMarkdown } from "../lib/utils";
+import { Message } from "./Messages";
+
 import Cookies from "js-cookie";
 
 const ChatStream = (props) => {
@@ -11,7 +10,7 @@ const ChatStream = (props) => {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const themeStyles = useTheme();
+
   const [isFirstChunk, setIsFirstChunk] = useState(true);
   const { caseID, handleNewPromptChat, newPromptChat } = props;
 
@@ -31,25 +30,6 @@ const ChatStream = (props) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const LoadingDots = () => (
-    <div className="flex items-center space-x-2">
-      <div className="flex space-x-1">
-        <div
-          className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
-          style={{ animationDelay: "0ms" }}
-        ></div>
-        <div
-          className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
-          style={{ animationDelay: "150ms" }}
-        ></div>
-        <div
-          className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
-          style={{ animationDelay: "300ms" }}
-        ></div>
-      </div>
-    </div>
-  );
 
   const parseChunkedResponse = (text) => {
     const jsonObjects = [];
@@ -282,90 +262,6 @@ const ChatStream = (props) => {
     }
   };
 
-  const DocumentItem = ({ document }) => (
-    <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg mt-2">
-      <FileText className="w-5 h-5 text-blue-500" />
-      <div className="flex-1">
-        <div className="font-medium">{document.file_name}</div>
-        <div className="text-sm text-gray-500">
-          {document.file_extension.toUpperCase()} • {document.file_size} •{" "}
-          {document.file_total_pages} pages
-        </div>
-      </div>
-    </div>
-  );
-
-  const ImageGrid = ({ images }) => (
-    <div className="grid grid-cols-2 gap-2 mt-2">
-      {images.map((image, index) => (
-        <div
-          key={index}
-          className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden"
-        >
-          <img
-            src={image.file_link}
-            alt={`Image ${index + 1}`}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      ))}
-    </div>
-  );
-
-  const handlePreviewDocument = (src, title) => {
-    console.log(src, title)
-  }
-
-  const handlePreviewImage = (src) => {
-    
-  }
-
-  const Message = ({ role, content, documents, images }) => (
-    <div className={`${themeStyles.chatBubbles[role].wrapper}`}>
-      <div
-        className={`${themeStyles.chatBubbles.base} ${themeStyles.chatBubbles[role].bubble.base} ${themeStyles.chatBubbles[role].bubble.after}`}
-      >
-        {role === "assistant" && content === "" && isFirstChunk ? (
-          <LoadingDots />
-        ) : (
-          <div
-            className={`markdown-content ${
-              role === "user" ? "text-white" : "text-gray-800"
-            }`}
-            dangerouslySetInnerHTML={{
-              __html:
-                role === "assistant"
-                  ? DOMPurify.sanitize(processMarkdown(content, handlePreviewDocument, handlePreviewImage), {
-                      ADD_TAGS: ["svg", "path", "line", "polyline", "circle"],
-                      ADD_ATTR: [
-                        "stroke",
-                        "stroke-width",
-                        "stroke-linecap",
-                        "stroke-linejoin",
-                        "points",
-                        "fill",
-                        "viewBox",
-                        "onclick",
-                      ],
-                    })
-                  : content,
-            }}
-          />
-        )}
-
-        {role === "assistant" &&
-          documents &&
-          documents.map((doc, index) => (
-            <DocumentItem key={index} document={doc} />
-          ))}
-
-        {role === "assistant" && images && images.length > 0 && (
-          <ImageGrid images={images} />
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <>
       <div
@@ -374,7 +270,11 @@ const ChatStream = (props) => {
       >
         <div className="w-full lg:max-w-[1024px] mx-auto space-y-6">
           {messages.map((message, index) => (
-            <Message key={index} {...message} />
+            <Message
+              key={index}
+              {...message}
+              isFirstChunk={isFirstChunk}
+            />
           ))}
           <div ref={messagesEndRef} />
         </div>
