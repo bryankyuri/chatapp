@@ -99,7 +99,6 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Register user with socket server
     handleLoading(true);
     handleGetPopularTopic();
     fetchRecentChat();
