@@ -33,7 +33,7 @@ export const theme = {
 
   // Chat bubble themes
   chatBubbles: {
-    base: "px-4 py-3 rounded-lg lg:max-w-2xl max-w-full break-words",
+    base: "px-4 py-3 rounded-lg lg:w-max-content  max-w-full break-words",
     user: {
       wrapper: "flex justify-end",
       bubble: {
