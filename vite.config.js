@@ -6,11 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
-      injectRegister: 'auto',
-      strategies: 'injectManifest',
-      srcDir: 'src',
-      filename: 'serviceworker.js',
+      registerType: "autoUpdate",
       devOptions: {
         enabled: true,
       },
@@ -29,9 +25,6 @@ export default defineConfig({
         start_url: "",
       },
       workbox: {
-        cleanupOutdatedCaches: true,
-        skipWaiting: false, // Important: This allows us to control the update flow
-        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.*/i,
