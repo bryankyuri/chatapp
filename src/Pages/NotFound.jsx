@@ -168,7 +168,7 @@ export const NotFoundPage = () => {
 
         {/* Adaptive Chat Input */}
         <div className="fixed bottom-0 right-0 left-64 bg-white border-t border-gray-200 p-4">
-          <div className="flex items-start space-x-2 bg-gray-50 rounded-lg border border-gray-200 px-3 py-4">
+          <div className="flex items-start space-x-2 bg-gray-50 rounded-lg border border-gray-200 px-3 py-2">
             <button className="p-2 hover:bg-gray-200 rounded-lg text-gray-500">
               <Plus size={20} />
             </button>

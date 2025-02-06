@@ -37,7 +37,7 @@ export const theme = {
     user: {
       wrapper: "flex justify-end",
       bubble: {
-        base: "bg-gradient-to-r from-[#ffb265] to-[#e29241] relative z-[2] text-white text-right flex",
+        base: "bg-gradient-to-r from-[#ffb265] to-[#e29241] relative z-[2] text-white flex",
         after:
           "after:content-[''] after:w-0 after:h-0 after:border-t-8 after:border-t-transparent after:border-l-[16px] after:border-l-[#e29241] after:border-b-8 after:border-b-transparent after:absolute after:bottom-[-4px] after:right-[-4px] after:rotate-[32deg] after:z-0",
       },
