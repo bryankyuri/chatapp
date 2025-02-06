@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite';
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -6,25 +6,36 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: 'prompt',
+      injectRegister: 'auto',
+      strategies: 'generateSW', // Changed from injectManifest
       devOptions: {
         enabled: true,
+        type: 'module',
       },
       manifest: {
-        name: "Chat App",
-        short_name: "Chat",
-        description: "Real-time chat application",
+        name: "LLM Elevate",
+        short_name: "Elevate",
+        description: "LLM Elevate chat application",
         theme_color: "#ffffff",
+        background_color: "#ffffff",
+        display: "standalone",
         icons: [
           {
             src: "/vite.svg",
             sizes: "192x192",
             type: "image/svg+xml",
-          },
+            purpose: "any maskable"
+          }
         ],
-        start_url: "",
+        start_url: "/",
+        scope: "/",
       },
       workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        cleanupOutdatedCaches: true,
+        skipWaiting: false,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.*/i,
@@ -37,14 +48,14 @@ export default defineConfig({
               },
               networkTimeoutSeconds: 10,
             },
-          },
+          }
         ],
       },
     }),
   ],
   server: {
     hmr: {
-      overlay: false, // Disable the error overlay
+      overlay: false,
     },
   },
   css: {

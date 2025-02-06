@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import Routes from "./Routes/index";
 import { AppProvider } from "./context/AppContext";
-// import PWAUpdatePrompt from "./components/Misc/PWAUpdatePropmt";
+import PWAUpdatePrompt from "./components/Misc/PWAUpdatePropmt";
 
 const App = () => {
   return (
@@ -11,7 +11,7 @@ const App = () => {
           <Routes />
         </BrowserRouter>
       </AppProvider>
-      {/* <PWAUpdatePrompt /> */}
+      <PWAUpdatePrompt />
     </>
   );
 };
